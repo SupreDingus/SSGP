@@ -115,7 +115,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 40
   MaxSpeed: 10
-  JumpForce: 1000
+  JumpForce: 15
+  JumpTime: 0.25
   SlowStrength: 0.7
   SlowEpsilon: 0.1
 --- !u!114 &114708973983953426

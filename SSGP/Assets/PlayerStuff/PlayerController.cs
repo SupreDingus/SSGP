@@ -9,9 +9,10 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
   //PROPERTIES
-  public float Speed = 2F; //Speed added to the player when moving..
+  public float Speed = 2F; //Speed added to the player when moving.
   public float MaxSpeed = 20F; //Maximum speed of the player.
   public float JumpForce = 5F; //Strength of the jump force.
+  public float JumpTime = 0.75F; //Holding down jump continues to jump for this long.
   [Range(0.01F, 0.99F)]
   public float SlowStrength = 0.25F; //How quickly the player slows when not inputting movement.
   public float SlowEpsilon = 0.01F; //Epsilon check for when we slow down.
@@ -20,7 +21,9 @@ public class PlayerController : MonoBehaviour
   Rigidbody body; //Rigidbody of this object.
   AttackScript attack; //AttackScript attached to this object.
   bool isGrounded; //True when touching the ground.
+  bool canJump; //True if jumping can be done.
   bool facingRight; //True when facing right.
+  float airTime; //Timer used when jumping.
 
 	// Use this for initialization
 	void Start ()
@@ -35,6 +38,7 @@ public class PlayerController : MonoBehaviour
     //Init necessary values.
     isGrounded = false;
     facingRight = true;
+    canJump = false;
 	}
 
   // FixedUpdate is called on specific intervals.
@@ -75,12 +79,28 @@ public class PlayerController : MonoBehaviour
       }
 
       //Jump input.
-      if (Input.GetAxisRaw("Vertical") > 0F /*&& isGrounded*/)
+      if (Input.GetAxisRaw("Vertical") > 0F && canJump)
       {
+        //Check for skip. (Airborne and we're past jumping.
+        if (!isGrounded && airTime > JumpTime)
+        {
+          canJump = false;
+        }
+        else if(isGrounded)
+        {
+          airTime = 0F;
+        }
+
+        //Do the jump stuff.
         Vector3 temp = body.velocity;
         temp.y = JumpForce;
         body.velocity = temp;
+        airTime += Time.fixedDeltaTime;
       }
+
+      //Check for turning off canJump.
+      if (Input.GetAxisRaw("Vertical") == 0F && !isGrounded && canJump)
+        canJump = false;
     }
 
     //If we attack and we're grounded, stop movement.
@@ -126,6 +146,7 @@ public class PlayerController : MonoBehaviour
     if(bottom <= top)
     {
       isGrounded = true;
+      canJump = true;
     }
     else
     {
@@ -139,6 +160,7 @@ public class PlayerController : MonoBehaviour
     isGrounded = false;
   }
 
+  //Return if we're facing right or not.
   public bool FacingRight()
   {
     return facingRight;
