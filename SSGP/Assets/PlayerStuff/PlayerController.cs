@@ -75,10 +75,11 @@ public class PlayerController : MonoBehaviour
       }
 
       //Jump input.
-      if (Input.GetAxisRaw("Vertical") > 0F && isGrounded)
+      if (Input.GetAxisRaw("Vertical") > 0F /*&& isGrounded*/)
       {
-        body.AddForce(Vector3.up * JumpForce);
-        isGrounded = false;
+        Vector3 temp = body.velocity;
+        temp.y = JumpForce;
+        body.velocity = temp;
       }
     }
 
