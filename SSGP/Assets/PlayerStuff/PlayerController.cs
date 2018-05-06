@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
   bool isGrounded; //True when touching the ground.
   bool canJump; //True if jumping can be done.
   bool facingRight; //True when facing right.
+  bool isLocked; //If true, skip update.
   float airTime; //Timer used when jumping.
 
 	// Use this for initialization
@@ -39,11 +40,18 @@ public class PlayerController : MonoBehaviour
     isGrounded = false;
     facingRight = true;
     canJump = false;
+    isLocked = false;
 	}
 
   // FixedUpdate is called on specific intervals.
   void FixedUpdate()
   {
+    if(isLocked)
+    {
+      canJump = false;
+      return;
+    }
+
     //Only take movement input if we're not attacking.
     if (!attack.IsAttacking())
     {
@@ -164,5 +172,11 @@ public class PlayerController : MonoBehaviour
   public bool FacingRight()
   {
     return facingRight;
+  }
+
+  //Lock / unlock the player controller.
+  public void FlipLock()
+  {
+    isLocked = !isLocked;
   }
 }
