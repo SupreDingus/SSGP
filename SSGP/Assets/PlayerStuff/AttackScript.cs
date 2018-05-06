@@ -9,10 +9,9 @@ public class AttackScript : MonoBehaviour
   public int Damage = 1; //Damage dealt per attack.
   public float Backswing = 1.1F; //How long before the player can attack again.
   public float DamageTime = 1F; //How long the damage area stays up. Must be lower than Backswing.
-  public GameObject AttackArea; //Game object used when attacking.
 
   //GLOBALS
-  GameObject damageObject; //Instantiate / destroy on this object.
+  GameObject attackArea; //Game object used when attacking. Childed on the player.
   PlayerController player; //PlayerController attached to this object.
   bool isAttacking; //True when attacking.
   float backswingTimer; //Timer used with backswing check.
@@ -22,9 +21,9 @@ public class AttackScript : MonoBehaviour
   // Use this for initialization
   void Start ()
   {
-    //Get the attack area, if necessary.
-    if(!AttackArea)
-      AttackArea = Resources.Load("AttackPrefab") as GameObject;
+    //Get the attack area and set it to disabled.
+    attackArea = this.gameObject.transform.GetChild(0).gameObject;
+    attackArea.SetActive(false);
 
     //Get the controller component.
     player = GetComponent<PlayerController>();
@@ -32,11 +31,11 @@ public class AttackScript : MonoBehaviour
     //Init values.
     backswingTimer = damageTimer = 0F;
     isAttacking = false;
-    attackAreaScale = AttackArea.transform.localScale.x * 0.5F + transform.localScale.x * 0.5F;
-	}
-	
-	// Update is called once per frame
-	void Update ()
+    attackAreaScale = attackArea.transform.localScale.x * 0.5F + transform.localScale.x * 0.5F;
+  }
+  
+  // Update is called once per frame
+  void Update ()
   {
     //Check for input.
     //If we're not attacking, instantiate the object.
@@ -54,7 +53,6 @@ public class AttackScript : MonoBehaviour
       }
 
       //Create the area.
-      damageObject = Instantiate(AttackArea, spawnPos, Quaternion.identity);
 
       //Set variables.
       damageTimer = 0F;

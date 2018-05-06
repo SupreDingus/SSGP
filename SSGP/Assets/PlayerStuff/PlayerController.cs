@@ -52,71 +52,62 @@ public class PlayerController : MonoBehaviour
       return;
     }
 
-    //Only take movement input if we're not attacking.
-    if (!attack.IsAttacking())
+   
+    //Left / right input.
+    if (Input.GetAxisRaw("Horizontal") != 0F)
     {
-      //Left / right input.
-      if (Input.GetAxisRaw("Horizontal") != 0F)
+      if (Input.GetAxisRaw("Horizontal") > 0F)
       {
-        if (Input.GetAxisRaw("Horizontal") > 0F)
-        {
-          body.AddForce(Vector3.right * Speed);
-          facingRight = true;
-        }
-        if (Input.GetAxisRaw("Horizontal") < 0F)
-        {
-          body.AddForce(-Vector3.right * Speed);
-          facingRight = false;
-        }
-
-        //Don't go too fast now.
-        if(Mathf.Abs(body.velocity.x) > MaxSpeed)
-        {
-          //Clamp the speed as necessary.
-          Vector3 temp = new Vector3(0, body.velocity.y, 0);
-          if (body.velocity.x > 0F)
-          {
-            temp.x = MaxSpeed;
-          }
-          else
-          {
-            temp.x = -MaxSpeed;
-          }
-          body.velocity = temp;
-        }
+        body.AddForce(Vector3.right * Speed);
+        facingRight = true;
+      }
+      if (Input.GetAxisRaw("Horizontal") < 0F)
+      {
+        body.AddForce(-Vector3.right * Speed);
+        facingRight = false;
       }
 
-      //Jump input.
-      if (Input.GetAxisRaw("Vertical") > 0F && canJump)
+      //Don't go too fast now.
+      if(Mathf.Abs(body.velocity.x) > MaxSpeed)
       {
-        //Check for skip. (Airborne and we're past jumping.
-        if (!isGrounded && airTime > JumpTime)
+        //Clamp the speed as necessary.
+        Vector3 temp = new Vector3(0, body.velocity.y, 0);
+        if (body.velocity.x > 0F)
         {
-          canJump = false;
+          temp.x = MaxSpeed;
         }
-        else if(isGrounded)
+        else
         {
-          airTime = 0F;
+          temp.x = -MaxSpeed;
         }
-
-        //Do the jump stuff.
-        Vector3 temp = body.velocity;
-        temp.y = JumpForce;
         body.velocity = temp;
-        airTime += Time.fixedDeltaTime;
+      }
+    }
+
+    //Jump input.
+    if (Input.GetAxisRaw("Vertical") > 0F && canJump)
+    {
+      //Check for skip. (Airborne and we're past jumping.
+      if (!isGrounded && airTime > JumpTime)
+      {
+        canJump = false;
+      }
+      else if(isGrounded)
+      {
+        airTime = 0F;
       }
 
-      //Check for turning off canJump.
-      if (Input.GetAxisRaw("Vertical") == 0F && !isGrounded && canJump)
-        canJump = false;
+      //Do the jump stuff.
+      Vector3 temp = body.velocity;
+      temp.y = JumpForce;
+      body.velocity = temp;
+      airTime += Time.fixedDeltaTime;
     }
 
-    //If we attack and we're grounded, stop movement.
-    else if (isGrounded)
-    {
-      Vector3 temp = new Vector3(0, body.velocity.y, 0);
-      body.velocity = temp;
-    }
+    //Check for turning off canJump.
+    if (Input.GetAxisRaw("Vertical") == 0F && !isGrounded && canJump)
+      canJump = false;
+  
 
     //If we didn't get any x-input, slow it down, if necessary.
     if (Input.GetAxisRaw("Horizontal") == 0 && Mathf.Abs(body.velocity.x) > SlowEpsilon)
