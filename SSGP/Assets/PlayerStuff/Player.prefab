@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 114701514434146730}
   - component: {fileID: 114708973983953426}
   - component: {fileID: 114413185135654960}
+  - component: {fileID: 114429471199412420}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -58,7 +59,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1394142792523312}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.01, y: -2.08, z: 0}
+  m_LocalPosition: {x: -0.01, y: -1.56, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4400158154583286}
@@ -204,6 +205,20 @@ MonoBehaviour:
   DashDuration: 0.4
   CoolDown: 1
   FloatEpsilon: 1
+--- !u!114 &114429471199412420
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1394142792523312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 746f093ec8355ed458c1295d7df30ff7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HookDistance: 10
+  TravelTime: 1
+  Hook: {fileID: 1512599682060662, guid: ea209c6a0d48b1d4fa70bdf6867410fa, type: 2}
 --- !u!114 &114701514434146730
 MonoBehaviour:
   m_ObjectHideFlags: 1

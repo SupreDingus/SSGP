@@ -137,28 +137,6 @@ public class PlayerController : MonoBehaviour
 
   private void OnCollisionEnter(Collision collision)
   {
-    /*//They're colliding.
-  //Get relevant points. A == this, B == other.
-  Manifold man = collide->GetManifold();
-  Transform* otherTrans = man.B->GetTransform();
-
-  float otherTop = otherTrans->GetPosition().y + (otherTrans->GetScale().y / 2.f);
-  float otherLeft = otherTrans->GetPosition().x - (otherTrans->GetScale().x / 2.f);
-  float otherRight = otherTrans->GetPosition().x + (otherTrans->GetScale().x / 2.f);
-
-  float thisBot = trans->GetPosition().y - (trans->GetScale().y / 2.f) + EPSILON;
-  float thisLeft = trans->GetPosition().x - (trans->GetScale().x / 2.f) + EPSILON;
-  float thisRight = trans->GetPosition().x + (trans->GetScale().x / 2.f) - EPSILON;
-
-  //Check values, set grounded.
-  if (otherTop >= thisBot)
-  {
-    if (otherLeft >= thisRight || otherRight >= thisLeft)
-    {
-      grounded = true;
-      return;
-    }
-  }*/
     //If the colliding object is below us, we're on the ground.
     //Y-Axis check.
     float bottom = transform.position.y - transform.localScale.y * 0.5F;
