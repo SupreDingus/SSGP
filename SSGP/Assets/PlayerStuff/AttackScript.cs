@@ -16,7 +16,7 @@ public class AttackScript : MonoBehaviour
   bool isAttacking; //True when attacking.
   float backswingTimer; //Timer used with backswing check.
   float damageTimer; //Timer used with damage check.
-  float attackAreaScale; //Half of the width of the total area.
+  float offset; //Use this to offset the area from the player.
 
   // Use this for initialization
   void Start ()
@@ -28,31 +28,33 @@ public class AttackScript : MonoBehaviour
     //Get the controller component.
     player = GetComponent<PlayerController>();
 
+    //Setup the offset vector.
+    offset = transform.localScale.x * 0.5F + attackArea.transform.localScale.x * 0.5F;
+
     //Init values.
     backswingTimer = damageTimer = 0F;
     isAttacking = false;
-    attackAreaScale = attackArea.transform.localScale.x * 0.5F + transform.localScale.x * 0.5F;
   }
   
   // Update is called once per frame
   void Update ()
   {
-    //Check for input.
+    //Flip which side the attack area is on.
+    if(player.FacingRight() && !isAttacking)
+    {
+      attackArea.transform.position = new Vector3(offset + transform.position.x, transform.position.y, transform.position.z);
+    }
+    else if (!player.FacingRight() && !isAttacking)
+    {
+      attackArea.transform.position = new Vector3(-offset + transform.position.x, transform.position.y, transform.position.z);
+    }
+
+    //Check for attack input.
     //If we're not attacking, instantiate the object.
     if (Input.GetKeyDown(KeyCode.X) && !isAttacking)
     {
-      //Are we facing left or right?
-      Vector3 spawnPos = transform.position;
-      if (player.FacingRight())
-      {
-        spawnPos.x += attackAreaScale;
-      }
-      else
-      {
-        spawnPos.x -= attackAreaScale;
-      }
-
-      //Create the area.
+      //Enable the area.
+      attackArea.SetActive(true);
 
       //Set variables.
       damageTimer = 0F;
@@ -61,19 +63,6 @@ public class AttackScript : MonoBehaviour
 
       //Go ahead and git outta here.
       return;
-    }
-
-    //Check to see if we get rid of the damage area already.
-    if(damageObject)
-    {
-      //Increment timer.
-      damageTimer += Time.deltaTime;
-
-      //Destroy if necessary.
-      if(damageTimer > DamageTime)
-      {
-        Destroy(damageObject);
-      }
     }
 
     //Check to see if we can attack again.
@@ -85,6 +74,7 @@ public class AttackScript : MonoBehaviour
       //Reset variable if necessary.
       if(backswingTimer > Backswing)
       {
+        attackArea.SetActive(false);
         isAttacking = false;
       }
     }
