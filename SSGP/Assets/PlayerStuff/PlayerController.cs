@@ -105,9 +105,8 @@ public class PlayerController : MonoBehaviour
     }
 
     //Check for turning off canJump.
-    if (Input.GetAxisRaw("Vertical") == 0F && !isGrounded && canJump)
+    if (!Input.GetKey(KeyCode.Z) && !isGrounded && canJump)
       canJump = false;
-  
 
     //If we didn't get any x-input, slow it down, if necessary.
     if (Input.GetAxisRaw("Horizontal") == 0 && Mathf.Abs(body.velocity.x) > SlowEpsilon)
@@ -138,14 +137,54 @@ public class PlayerController : MonoBehaviour
 
   private void OnCollisionEnter(Collision collision)
   {
-    //If the colliding object is below us, we're on the ground.
-    float bottom = transform.position.y - transform.localScale.y;
-    float top = collision.transform.position.y + collision.transform.localScale.y;
+    /*//They're colliding.
+  //Get relevant points. A == this, B == other.
+  Manifold man = collide->GetManifold();
+  Transform* otherTrans = man.B->GetTransform();
 
-    if(bottom <= top)
+  float otherTop = otherTrans->GetPosition().y + (otherTrans->GetScale().y / 2.f);
+  float otherLeft = otherTrans->GetPosition().x - (otherTrans->GetScale().x / 2.f);
+  float otherRight = otherTrans->GetPosition().x + (otherTrans->GetScale().x / 2.f);
+
+  float thisBot = trans->GetPosition().y - (trans->GetScale().y / 2.f) + EPSILON;
+  float thisLeft = trans->GetPosition().x - (trans->GetScale().x / 2.f) + EPSILON;
+  float thisRight = trans->GetPosition().x + (trans->GetScale().x / 2.f) - EPSILON;
+
+  //Check values, set grounded.
+  if (otherTop >= thisBot)
+  {
+    if (otherLeft >= thisRight || otherRight >= thisLeft)
     {
-      isGrounded = true;
-      canJump = true;
+      grounded = true;
+      return;
+    }
+  }*/
+    //If the colliding object is below us, we're on the ground.
+    //Y-Axis check.
+    float bottom = transform.position.y - transform.localScale.y * 0.5F;
+    float top = collision.transform.position.y + collision.transform.localScale.y * 0.5F;
+    
+    if(bottom >= top)
+    {
+      //X-axis check.
+      float epsilon = 0.001F;
+      float xScale = transform.localScale.x * 0.5F;
+      float thisLeft = transform.position.x - xScale + epsilon;
+      float thisRight = transform.position.x + xScale - epsilon;
+
+      xScale = collision.transform.localScale.x * 0.5F;
+      float otherLeft = collision.transform.position.x - xScale;
+      float otherRight = collision.transform.position.x + xScale;
+
+      if(otherLeft < thisRight && otherRight > thisLeft)
+      {
+        isGrounded = true;
+        canJump = true;
+      }
+      else
+      {
+        print("Failed x check");
+      }
     }
     else
     {
