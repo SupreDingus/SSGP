@@ -305,6 +305,7 @@
   <ItemGroup>
     <Compile Include="Assets\PlayerStuff\AttackScript.cs" />
     <Compile Include="Assets\PlayerStuff\DashScript.cs" />
+    <Compile Include="Assets\PlayerStuff\HookshotScript.cs" />
     <Compile Include="Assets\PlayerStuff\PlayerController.cs" />
   </ItemGroup>
   <ItemGroup>

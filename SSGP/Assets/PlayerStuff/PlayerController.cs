@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour
     }
 
     //Jump input.
-    if (Input.GetAxisRaw("Vertical") > 0F && canJump)
+    if (Input.GetKey(KeyCode.Z) && canJump)
     {
       //Check for skip. (Airborne and we're past jumping.
       if (!isGrounded && airTime > JumpTime)
