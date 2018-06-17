@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour
     }
 
     //Jump input.
-    if (Input.GetAxisRaw("Vertical") > 0F && canJump)
+    if (Input.GetKey(KeyCode.Z) && canJump)
     {
       //Check for skip. (Airborne and we're past jumping.
       if (!isGrounded && airTime > JumpTime)
@@ -105,9 +105,8 @@ public class PlayerController : MonoBehaviour
     }
 
     //Check for turning off canJump.
-    if (Input.GetAxisRaw("Vertical") == 0F && !isGrounded && canJump)
+    if (!Input.GetKey(KeyCode.Z) && !isGrounded && canJump)
       canJump = false;
-  
 
     //If we didn't get any x-input, slow it down, if necessary.
     if (Input.GetAxisRaw("Horizontal") == 0 && Mathf.Abs(body.velocity.x) > SlowEpsilon)
@@ -139,13 +138,31 @@ public class PlayerController : MonoBehaviour
   private void OnCollisionEnter(Collision collision)
   {
     //If the colliding object is below us, we're on the ground.
-    float bottom = transform.position.y - transform.localScale.y;
-    float top = collision.transform.position.y + collision.transform.localScale.y;
-
-    if(bottom <= top)
+    //Y-Axis check.
+    float bottom = transform.position.y - transform.localScale.y * 0.5F;
+    float top = collision.transform.position.y + collision.transform.localScale.y * 0.5F;
+    
+    if(bottom >= top)
     {
-      isGrounded = true;
-      canJump = true;
+      //X-axis check.
+      float epsilon = 0.001F;
+      float xScale = transform.localScale.x * 0.5F;
+      float thisLeft = transform.position.x - xScale + epsilon;
+      float thisRight = transform.position.x + xScale - epsilon;
+
+      xScale = collision.transform.localScale.x * 0.5F;
+      float otherLeft = collision.transform.position.x - xScale;
+      float otherRight = collision.transform.position.x + xScale;
+
+      if(otherLeft < thisRight && otherRight > thisLeft)
+      {
+        isGrounded = true;
+        canJump = true;
+      }
+      else
+      {
+        print("Failed x check");
+      }
     }
     else
     {
