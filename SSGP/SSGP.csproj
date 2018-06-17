@@ -303,6 +303,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\HookLogic.cs" />
     <Compile Include="Assets\PlayerStuff\AttackScript.cs" />
     <Compile Include="Assets\PlayerStuff\DashScript.cs" />
     <Compile Include="Assets\PlayerStuff\HookshotScript.cs" />

@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 65260656534909710}
   m_Layer: 0
   m_Name: AttackPrefab
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -47,7 +47,7 @@ GameObject:
   - component: {fileID: 114429471199412420}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -218,6 +218,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HookDistance: 10
   TravelTime: 1
+  Cooldown: 5
   Hook: {fileID: 1512599682060662, guid: ea209c6a0d48b1d4fa70bdf6867410fa, type: 2}
 --- !u!114 &114701514434146730
 MonoBehaviour:
