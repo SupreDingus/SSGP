@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/MarkTest.unity
+- path: Assets/Scenes/LevelEditing.unity
   isLoaded: 1
   isActive: 1

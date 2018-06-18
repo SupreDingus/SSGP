@@ -135,7 +135,7 @@ public class PlayerController : MonoBehaviour
     }
   }
 
-  private void OnCollisionEnter(Collision collision)
+  private void OnCollisionStay(Collision collision)
   {
     //If the colliding object is below us, we're on the ground.
     //Y-Axis check.
