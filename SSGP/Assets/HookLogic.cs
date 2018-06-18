@@ -29,8 +29,11 @@ public class HookLogic : MonoBehaviour
 
   private void OnCollisionEnter(Collision collision)
   {
-    print("We hit something!");
-    print(collision.transform.gameObject.tag);
+    //If we hit the player, skip it.
+    if (collision.gameObject.tag == "Player")
+    {
+      return;
+    }
 
     //Set hit, get the object info.
     hitSomething = true;

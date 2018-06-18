@@ -22,12 +22,14 @@ public class HookshotScript : MonoBehaviour
   Rigidbody body; //Rigidbody of the player.
   GameObject hookObject; //Hookshot object.
   Vector3 move; //Movement vector for the hookshot object.
+  Vector3 targetDir; //If we're pulling somewhere, pull here.
   float travelSpeed; //How fast the hookshot travels. Calculated from HookDistance and TravelTime.
   float xOffset; //Spawn the hookshot this far way from the player on the x axis.
   float yOffset; //Spawn this far awy on the y axis.
   bool isHooking; //True while the hookshot is firing.
   bool goingOut; //True while the hookshot is moving away from the player.
   bool canHook; //True when the hookshot can be fired.
+  bool isPulling; //True when pulling to targetPoint.
   float timer; //Used with Cooldown to determine when the hookshot can be fired again.
   
   // Use this for initialization
@@ -48,12 +50,35 @@ public class HookshotScript : MonoBehaviour
     xOffset = transform.localScale.x * 0.5F + Hook.transform.localScale.x * 0.5F;
     yOffset = transform.localScale.y * 0.5F + Hook.transform.localScale.y * 0.5F;
     isHooking = false;
-    goingOut = false;
+    goingOut = true;
+    canHook = true;
+    isPulling = false;
+    timer = 0F;
   }
 
   // Update is called once per frame
   void Update ()
   {
+    //Check for already pulling.
+    if(isPulling)
+    {
+      Pull();
+      return;
+    }
+
+    //Check for retracting.
+    if(!goingOut)
+    {
+      Retract();
+      return;
+    }
+
+    //Check for no hook.
+    if(!canHook)
+    {
+      return;
+    }
+
     //Check for relevent input.
     if(Input.GetKey(KeyCode.V) && !isHooking)
     {
@@ -99,5 +124,81 @@ public class HookshotScript : MonoBehaviour
       hookObject = Instantiate(Hook, spawnPos, Quaternion.identity);
       hookObject.GetComponent<Rigidbody>().velocity = move;
     }
+
+    //Check for impact / retraction.
+    if(isHooking && goingOut)
+    {
+      //First check to see if hookshot hit something.
+      if(hookObject.GetComponent<HookLogic>().GetHitStatus())
+      {
+        //If we did, check what we did hit.
+        //If it's an enemy, stun enemy and pull player and enemy together, if possible.
+        if(hookObject.GetComponent<HookLogic>().GetHitObject().tag == "Enemy")
+        {
+          //Logic here...
+        }
+        //If it's a wall, pull the player to it.
+        else if (hookObject.GetComponent<HookLogic>().GetHitObject().tag == "Wall")
+        {
+          //Determine the target point and direction, start pulling.
+          Vector3 targetPoint = hookObject.transform.position;
+          targetDir = (targetPoint - transform.position).normalized * travelSpeed;
+          isPulling = true;
+          Pull();
+        }
+        //Otherwise, retract it.
+        else
+        {
+          goingOut = false;
+          Retract();
+        }
+      }
+
+      //Increment timer, check to see if it needs to retract.
+      timer += Time.deltaTime;
+      if(timer >= TravelTime)
+      {
+        goingOut = false;
+        Retract();
+      }
+    }
+  }
+
+  private void Retract()
+  {
+    //Set target direction back towards the player.
+    targetDir = (transform.position - hookObject.transform.position).normalized * travelSpeed;
+
+    //Make the hook move back towards the player.
+    hookObject.GetComponent<Rigidbody>().velocity = targetDir;
+  }
+
+  private void Pull()
+  {
+    //Just move in the target direction.
+    GetComponent<Rigidbody>().velocity = targetDir;
+  }
+
+  public void ToggleHook()
+  {
+    canHook = !canHook;
+  }
+
+  private void OnCollisionEnter(Collision collision)
+  {
+    //If it's just collision with the player, skip.
+    if (collision.gameObject.tag == "Player")
+      return;
+
+    //check to see if it's the hook object.
+    if(collision.gameObject.tag == "Hook" && !goingOut)
+    {
+      Destroy(collision.gameObject);
+      isHooking = false;
+      goingOut = true;
+    }
+
+    //Stop pulling.
+    isPulling = false;
   }
 }

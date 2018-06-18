@@ -52,7 +52,6 @@ public class PlayerController : MonoBehaviour
       return;
     }
 
-   
     //Left / right input.
     if (Input.GetAxisRaw("Horizontal") != 0F)
     {
@@ -135,7 +134,7 @@ public class PlayerController : MonoBehaviour
     }
   }
 
-  private void OnCollisionEnter(Collision collision)
+  private void OnCollisionStay(Collision collision)
   {
     //If the colliding object is below us, we're on the ground.
     //Y-Axis check.
@@ -158,10 +157,6 @@ public class PlayerController : MonoBehaviour
       {
         isGrounded = true;
         canJump = true;
-      }
-      else
-      {
-        print("Failed x check");
       }
     }
     else
